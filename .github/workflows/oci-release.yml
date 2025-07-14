@@ -1,0 +1,41 @@
+name: Release Chart
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'Chart.yaml'
+      - 'values.yaml'
+      - 'values.schema.json'
+      - 'templates/**'
+  workflow_dispatch:
+jobs:
+  release:
+    permissions:
+      contents: read
+      packages: write
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+    
+    - name: Get chart version
+      id: chart_version
+      run: |
+        VERSION=$(grep '^version:' Chart.yaml | awk '{print $2}')
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Chart version: $VERSION"
+    
+    - name: Chart | Push
+      uses: appany/helm-oci-chart-releaser@v0.4.2
+      with:
+        name: openstack-standalone-cp-nocni
+        repository: ${{ github.repository }}
+        tag: ${{ steps.chart_version.outputs.version }}
+        path: .
+        registry: ghcr.io
+        registry_username: ${{ github.actor }}
+        registry_password: ${{ secrets.GITHUB_TOKEN }}
+        update_dependencies: 'true'

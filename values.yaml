@@ -1,0 +1,206 @@
+controlPlaneNumber: 3
+workersNumber: 3
+ingressNumber: 2
+gpuNumberL4: 0
+gpuNumberL40: 0
+gpuNumberH100: 0
+gpuNumberH200: 0
+gpuNumberB200: 0
+gpuNumberB200vm: 0
+
+clusterNetwork:
+  pods:
+    cidrBlocks:
+    - "10.244.0.0/16"
+  services:
+    cidrBlocks:
+    - "10.96.0.0/12"
+  serviceDomain: "cluster.local"
+
+clusterLabels: {}
+
+ccmRegional: true
+
+identityRef:
+  name: ""
+  cloudName: ""
+  region: ""
+
+bastion:
+  enabled: true
+  spec:
+    providerID: ""
+    flavor: ""
+    image:
+      filter:
+        name: ""
+
+managedSecurityGroups:
+  allowAllInClusterTraffic: false
+
+managedSubnets:
+- cidr: 10.6.0.0/24
+
+apiServerLoadBalancer:
+  enabled: true
+
+networkMTU: 1500
+
+externalNetwork:
+  filter:
+    name: ""
+
+controlPlane:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+worker:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+ingress:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpul4:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpul40:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpuh200:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpuh100:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpub200:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+gpub200vm:
+  sshPublicKey: ""
+  providerID: ""
+  flavor: ""
+  image:
+    filter:
+      name: ""
+  ports: []
+  rootVolume: {}
+  additionalBlockDevices: []
+  securityGroups:
+  - filter:
+      name: "default"
+      description: ""
+      projectID: ""
+
+k0s:
+  version: v1.32.3+k0s.0
+  api:
+    extraArgs:
+      oidc-client-id: dev-1
+      oidc-groups-claim: groups
+      oidc-groups-prefix: 'keycloak:'
+      oidc-issuer-url: https://keycloak.example.dev/realms/realmWithLdap
+      oidc-username-claim: name
+      oidc-username-prefix: 'keycloak:'
