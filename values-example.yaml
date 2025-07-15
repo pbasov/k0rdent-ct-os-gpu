@@ -5,13 +5,13 @@ ingressNumber: 2
 # GPU node configurations
 gpuTypes:
   l4:
-    replicas: 0
+    replicas: 0  # Set to desired number when needed
     nodeLabels:
       node-role.kubernetes.io/gpu: ""
       node.kubernetes.io/role: gpu
       node.kubernetes.io/gpu-type: "l4"
   l40:
-    replicas: 0
+    replicas: 0  # Set to desired number when needed
     nodeLabels:
       node-role.kubernetes.io/gpu: ""
       node.kubernetes.io/role: gpu
@@ -23,7 +23,7 @@ gpuTypes:
       node.kubernetes.io/role: gpu
       node.kubernetes.io/gpu-type: "h100"
   h200:
-    replicas: 0
+    replicas: 0  # Set to desired number when needed
     nodeLabels:
       node-role.kubernetes.io/gpu: ""
       node.kubernetes.io/role: gpu
@@ -55,21 +55,21 @@ clusterLabels: {}
 ccmRegional: true
 
 identityRef:
-  name: ""
-  cloudName: ""
-  region: ""
+  name: "openstack-cloud-config"
+  cloudName: "openstack"
+  region: "RegionOne"
 
 bastion:
   enabled: true
   spec:
     providerID: ""
-    flavor: ""
+    flavor: "m1.small"
     image:
       filter:
-        name: ""
+        name: "ubuntu-noble-server-amd64"
 
 managedSecurityGroups:
-  allowAllInClusterTraffic: false
+  allowAllInClusterTraffic: true
 
 managedSubnets:
 - cidr: 10.6.0.0/24
@@ -81,17 +81,19 @@ networkMTU: 1500
 
 externalNetwork:
   filter:
-    name: ""
+    name: "Public_Net_Vlan_3009"
 
 controlPlane:
-  sshPublicKey: ""
+  sshPublicKey: "k0rdent-key"
   providerID: ""
-  flavor: ""
+  flavor: "inference-control-plane"
   image:
     filter:
-      name: ""
+      name: "gcore-ubuntu-noble-master-1-31-5"
   ports: []
-  rootVolume: {}
+  rootVolume:
+    sizeGiB: 100
+    type: "netapp-nvme"
   additionalBlockDevices: []
   securityGroups:
   - filter:
@@ -100,14 +102,16 @@ controlPlane:
       projectID: ""
 
 worker:
-  sshPublicKey: ""
+  sshPublicKey: "k0rdent-key"
   providerID: ""
-  flavor: ""
+  flavor: "inference-worker-infra"
   image:
     filter:
-      name: ""
+      name: "gcore-ubuntu-noble-worker-1-31-5"
   ports: []
-  rootVolume: {}
+  rootVolume:
+    sizeGiB: 100
+    type: "netapp-nvme"
   additionalBlockDevices: []
   securityGroups:
   - filter:
@@ -116,14 +120,16 @@ worker:
       projectID: ""
 
 ingress:
-  sshPublicKey: ""
+  sshPublicKey: "k0rdent-key"
   providerID: ""
-  flavor: ""
+  flavor: "inference-ingress"
   image:
     filter:
-      name: ""
+      name: "gcore-ubuntu-noble-worker-1-31-5"
   ports: []
-  rootVolume: {}
+  rootVolume:
+    sizeGiB: 100
+    type: "netapp-nvme"
   additionalBlockDevices: []
   securityGroups:
   - filter:
@@ -134,12 +140,15 @@ ingress:
 # GPU machine specifications - consolidated configuration
 gpu:
   # Common configuration for all GPU types
-  sshPublicKey: ""
+  sshPublicKey: "k0rdent-key"
   providerID: ""
   image:
     filter:
-      name: ""
-  ports: []
+      name: "gcore-ubuntu-noble-worker-1-31-5-bm"
+  ports:
+  - network:
+      filter:
+        name: "Ironic_Vlan_1505"
   rootVolume: {}
   additionalBlockDevices: []
   securityGroups:
@@ -150,13 +159,13 @@ gpu:
   # GPU-specific configurations
   types:
     l4:
-      flavor: ""
+      flavor: "bm-server-l4"
     l40:
-      flavor: ""
+      flavor: "bm-server-l40"
     h100:
       flavor: ""
     h200:
-      flavor: ""
+      flavor: "baremetal-hgx"
     b200:
       flavor: ""
     b200vm:
@@ -174,4 +183,3 @@ k0s:
       # oidc-issuer-url: ""
       # oidc-username-claim: "name"
       # oidc-username-prefix: ""
-

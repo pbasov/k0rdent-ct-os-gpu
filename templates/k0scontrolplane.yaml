@@ -18,7 +18,6 @@ spec:
       spec:
         api:
           extraArgs:
-            anonymous-auth: "true"
             {{- with .Values.k0s.api.extraArgs }}
               {{- toYaml . | nindent 12 }}
             {{- end }}

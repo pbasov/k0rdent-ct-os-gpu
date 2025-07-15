@@ -25,20 +25,217 @@
       "type": "number",
       "minimum": 1
     },
-    "gpuNumberL4": {
-      "description": "The number of GPU L4 nodes",
-      "type": "number",
-      "minimum": 0
+    "gpuTypes": {
+      "description": "GPU node configurations",
+      "type": "object",
+      "properties": {
+        "l4": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of L4 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "l40": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of L40 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "h100": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of H100 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "h200": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of H200 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "b200": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of B200 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "b200vm": {
+          "type": "object",
+          "properties": {
+            "replicas": {
+              "description": "The number of B200VM GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "nodeLabels": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
     },
-    "gpuNumberL40": {
-      "description": "The number of GPU L40 nodes",
-      "type": "number",
-      "minimum": 0
-    },
-    "l40H200": {
-      "description": "The number of GPU H200 nodes",
-      "type": "number",
-      "minimum": 0
+    "gpu": {
+      "description": "GPU machine configurations",
+      "type": "object",
+      "properties": {
+        "sshPublicKey": {
+          "type": "string",
+          "description": "SSH public key for GPU nodes"
+        },
+        "providerID": {
+          "type": "string",
+          "description": "OpenStack provider ID for GPU nodes"
+        },
+        "image": {
+          "type": "object",
+          "properties": {
+            "filter": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string",
+                  "description": "Image name for GPU nodes"
+                },
+                "tags": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "ports": {
+          "type": "array",
+          "description": "Network ports for GPU nodes"
+        },
+        "rootVolume": {
+          "type": "object",
+          "description": "Root volume configuration for GPU nodes"
+        },
+        "additionalBlockDevices": {
+          "type": "array",
+          "description": "Additional block devices for GPU nodes"
+        },
+        "securityGroups": {
+          "type": "array",
+          "description": "Security groups for GPU nodes"
+        },
+        "types": {
+          "type": "object",
+          "description": "GPU type-specific configurations",
+          "properties": {
+            "l4": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for L4 GPU nodes"
+                }
+              }
+            },
+            "l40": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for L40 GPU nodes"
+                }
+              }
+            },
+            "h100": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for H100 GPU nodes"
+                }
+              }
+            },
+            "h200": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for H200 GPU nodes"
+                }
+              }
+            },
+            "b200": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for B200 GPU nodes"
+                }
+              }
+            },
+            "b200vm": {
+              "type": "object",
+              "properties": {
+                "flavor": {
+                  "type": "string",
+                  "description": "OpenStack flavor for B200VM GPU nodes"
+                }
+              }
+            }
+          }
+        }
+      }
     },
     "clusterNetwork": {
       "type": "object",
