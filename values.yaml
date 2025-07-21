@@ -205,7 +205,7 @@ k0s:
                 type: MostAllocated
                 resources:
                 - name: nvidia.com/gpu
-                  weight: 1000
+                  weight: 100
                 - name: cpu
                   weight: 1
                 - name: memory
