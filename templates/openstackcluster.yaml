@@ -34,10 +34,7 @@ spec:
   {{- end }}
   managedSecurityGroups:
     {{- toYaml .Values.managedSecurityGroups | nindent 4 }}
-  {{- if .Values.managedSubnets }}
-  managedSubnets:
-    {{- toYaml .Values.managedSubnets | nindent 4 }}
-  {{- end }}
+  {{- if or .Values.network .Values.subnets }}
   {{- if .Values.network }}
   network:
     {{- toYaml .Values.network | nindent 4 }}
@@ -45,6 +42,10 @@ spec:
   {{- if .Values.subnets }}
   subnets:
     {{- toYaml .Values.subnets | nindent 4 }}
+  {{- end }}
+  {{- else if .Values.managedSubnets }}
+  managedSubnets:
+    {{- toYaml .Values.managedSubnets | nindent 4 }}
   {{- end }}
   {{- if .Values.controlPlaneAvailabilityZones }}
   controlPlaneAvailabilityZones:
