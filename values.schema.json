@@ -10,6 +10,10 @@
     "worker"
   ],
   "properties": {
+    "authURL": {
+      "description": "The OpenStack authentication URL",
+      "type": "string"
+    },
     "controlPlaneNumber": {
       "description": "The number of control plane nodes",
       "type": "number",
@@ -125,6 +129,28 @@
             }
           }
         }
+      }
+    },
+    "networkMTU": {
+      "type": "number",
+      "description": "The MTU (Maximum Transmission Unit) value for the network",
+      "default": 1500
+    },
+    "disableExternalNetwork": {
+      "type": "boolean",
+      "description": "Disable external network for private clusters",
+      "default": false
+    },
+    "disableAPIServerFloatingIP": {
+      "type": "boolean",
+      "description": "Disable floating IP for API server",
+      "default": false
+    },
+    "controlPlaneAvailabilityZones": {
+      "type": "array",
+      "description": "Availability zones for control plane nodes",
+      "items": {
+        "type": "string"
       }
     },
     "gpu": {
@@ -335,22 +361,60 @@
     },
     "network": {
       "type": "object",
-      "description": "Networking resources reference for nodes",
-      "required": [
-        "name",
-        "subnets"
-      ],
+      "description": "Custom network configuration for the cluster",
       "properties": {
-        "name": {
-          "description": "Name of the OpenStack network",
-          "type": "string"
+        "id": {
+          "type": "string",
+          "description": "The UUID of the network"
         },
-        "subnets": {
+        "filter": {
           "type": "object",
+          "description": "Filters to select the network",
           "properties": {
             "name": {
-              "description": "Name of the OpenStack subnet",
-              "type": "string"
+              "type": "string",
+              "description": "Name of the network"
+            },
+            "tags": {
+              "type": "array",
+              "description": "Tags to filter the network",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "subnets": {
+      "type": "array",
+      "description": "Custom subnets configuration for the cluster",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "The UUID of the subnet"
+          },
+          "filter": {
+            "type": "object",
+            "description": "Filters to select the subnet",
+            "properties": {
+              "name": {
+                "type": "string",
+                "description": "Name of the subnet"
+              },
+              "cidr": {
+                "type": "string",
+                "description": "CIDR of the subnet"
+              },
+              "tags": {
+                "type": "array",
+                "description": "Tags to filter the subnet",
+                "items": {
+                  "type": "string"
+                }
+              }
             }
           }
         }
