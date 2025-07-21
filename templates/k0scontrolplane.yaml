@@ -10,6 +10,36 @@ spec:
       - --kubelet-extra-args="--cloud-provider=external"
       - --disable-components=konnectivity-server
       - --cri-socket=remote:/var/run/crio/crio.sock
+    {{- if .Values.k0s.files }}
+    files:
+      {{- range .Values.k0s.files }}
+      - path: {{ .path }}
+        {{- if .permissions }}
+        permissions: {{ .permissions | quote }}
+        {{- end }}
+        {{- if .content }}
+        content: |
+          {{- .content | nindent 10 }}
+        {{- else if .contentFrom }}
+        contentFrom:
+          {{- if .contentFrom.secretRef }}
+          secretRef:
+            name: {{ .contentFrom.secretRef.name }}
+            key: {{ .contentFrom.secretRef.key }}
+            {{- if .contentFrom.secretRef.namespace }}
+            namespace: {{ .contentFrom.secretRef.namespace }}
+            {{- end }}
+          {{- else if .contentFrom.configMapRef }}
+          configMapRef:
+            name: {{ .contentFrom.configMapRef.name }}
+            key: {{ .contentFrom.configMapRef.key }}
+            {{- if .contentFrom.configMapRef.namespace }}
+            namespace: {{ .contentFrom.configMapRef.namespace }}
+            {{- end }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
     k0s:
       apiVersion: k0s.k0sproject.io/v1beta1
       kind: ClusterConfig
@@ -18,7 +48,6 @@ spec:
       spec:
         api:
           extraArgs:
-            anonymous-auth: "true"
             {{- with .Values.k0s.api.extraArgs }}
               {{- toYaml . | nindent 12 }}
             {{- end }}
@@ -79,6 +108,9 @@ spec:
           provider: custom
           kubeProxy:
             disabled: true
+        scheduler:
+          extraArgs:
+            config: /etc/k0s/scheduler-config.yaml
   machineTemplate:
     infrastructureRef:
       apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
