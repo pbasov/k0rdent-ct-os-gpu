@@ -59,7 +59,7 @@ spec:
             charts: 
               - name: openstack-ccm
                 chartname: openstack/openstack-cloud-controller-manager
-                version: 2.31.1
+                version: 2.33.0
                 order: 1
                 namespace: kube-system
                 values: |
@@ -82,7 +82,7 @@ spec:
                       value: {{ .Values.ccmRegional | quote }}
               - name: openstack-csi
                 chartname: openstack/openstack-cinder-csi
-                version: 2.31.2
+                version: 2.33.0
                 order: 2
                 namespace: kube-system
                 values: |
@@ -93,7 +93,7 @@ spec:
                       allowVolumeExpansion: true
                     retain:
                       isDefault: true
-                      allowVolumeExpansion: false
+                      allowVolumeExpansion: true
                   secret:
                     enabled: true
                     name: openstack-cloud-config

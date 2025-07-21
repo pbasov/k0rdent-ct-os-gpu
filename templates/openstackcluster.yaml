@@ -17,6 +17,9 @@ spec:
   {{- if .Values.networkMTU }}
   networkMTU: {{ .Values.networkMTU }}
   {{- end }}
+  {{- if .Values.disableAPIServerFloatingIP }}
+  disableAPIServerFloatingIP: true
+  {{- end }}
   {{- if .Values.disableExternalNetwork }}
   disableExternalNetwork: true
   {{- else if .Values.externalNetwork }}
