@@ -67,6 +67,8 @@ bastion:
     image:
       filter:
         name: ""
+controlPlaneAvailabilityZones:
+  - nova
 
 managedSecurityGroups:
   allowAllInClusterTraffic: false
@@ -78,6 +80,8 @@ apiServerLoadBalancer:
   enabled: true
 
 networkMTU: 1500
+
+disableExternalNetwork: false
 
 externalNetwork:
   filter:
@@ -174,4 +178,36 @@ k0s:
       # oidc-issuer-url: ""
       # oidc-username-claim: "name"
       # oidc-username-prefix: ""
+  
+  # Files to deploy to control plane nodes
+  files:
+    # GPU-aware scheduler configuration
+    - path: /etc/k0s/scheduler-config.yaml
+      permissions: "0644"
+      content: |
+        apiVersion: kubescheduler.config.k8s.io/v1
+        kind: KubeSchedulerConfiguration
+        clientConnection:
+          kubeconfig: /var/lib/k0s/pki/scheduler.conf
+        profiles:
+        - schedulerName: default-scheduler
+          plugins:
+            score:
+              enabled:
+              - name: NodeResourcesFit
+                weight: 100
+              disabled:
+              - name: NodeResourcesFit
+          pluginConfig:
+          - name: NodeResourcesFit
+            args:
+              scoringStrategy:
+                type: MostAllocated
+                resources:
+                - name: nvidia.com/gpu
+                  weight: 1000
+                - name: cpu
+                  weight: 1
+                - name: memory
+                  weight: 1
 

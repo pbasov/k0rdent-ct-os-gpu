@@ -1,5 +1,35 @@
 {{- range $gpuType, $gpuConfig := .Values.gpuTypes }}
 {{- if gt ($gpuConfig.replicas | int) 0 }}
+{{- $gpuTypeConfig := index $.Values.gpu.types $gpuType }}
+{{- if $gpuTypeConfig.customUserDataRef }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: K0sWorkerConfigTemplate
+metadata:
+  name: {{ include "cluster.name" $ }}-{{ $gpuType }}-machine-config
+spec:
+  template:
+    spec:
+      args:
+      - --enable-cloud-provider
+      - --kubelet-extra-args="--cloud-provider=external"
+      - --cri-socket=remote:/var/run/crio/crio.sock
+      version: {{ $.Values.k0s.version }}
+      customUserDataRef:
+        {{- if $gpuTypeConfig.customUserDataRef.secretRef }}
+        secretRef:
+          name: {{ $gpuTypeConfig.customUserDataRef.secretRef.name }}
+          {{- if $gpuTypeConfig.customUserDataRef.secretRef.namespace }}
+          namespace: {{ $gpuTypeConfig.customUserDataRef.secretRef.namespace }}
+          {{- end }}
+        {{- else if $gpuTypeConfig.customUserDataRef.configMapRef }}
+        configMapRef:
+          name: {{ $gpuTypeConfig.customUserDataRef.configMapRef.name }}
+          {{- if $gpuTypeConfig.customUserDataRef.configMapRef.namespace }}
+          namespace: {{ $gpuTypeConfig.customUserDataRef.configMapRef.namespace }}
+          {{- end }}
+        {{- end }}
+{{- end }}
 ---
 apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
 kind: OpenStackMachineTemplate
@@ -74,7 +104,12 @@ spec:
         configRef:
           apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
           kind: K0sWorkerConfigTemplate
+          {{- $gpuTypeConfig := index $.Values.gpu.types $gpuType }}
+          {{- if $gpuTypeConfig.customUserDataRef }}
+          name: {{ include "cluster.name" $ }}-{{ $gpuType }}-machine-config
+          {{- else }}
           name: {{ include "k0sworkerconfigtemplate.name" $ }}
+          {{- end }}
       clusterName: {{ include "cluster.name" $ }}
       infrastructureRef:
         apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
