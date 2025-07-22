@@ -46,6 +46,10 @@ spec:
       metadata:
         name: k0s
       spec:
+        featureGates:
+          - name: ImageVolume
+            enabled: true
+            components: ["kubelet", "kube-apiserver"]
         api:
           extraArgs:
             {{- with .Values.k0s.api.extraArgs }}
