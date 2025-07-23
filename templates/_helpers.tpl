@@ -16,7 +16,7 @@
 
 {{- define "openstackmachinetemplate.gpu.name" -}}
     {{- $gpuType := .gpuType }}
-    {{- include "cluster.name" .root }}-{{ $gpuType }}-mt-{{ .root.Values.gpu.image | toString | sha256sum | trunc 8 }}
+    {{- include "cluster.name" .root }}-{{ $gpuType }}-mt-{{ .root.Values.gpuWorker.image | toString | sha256sum | trunc 8 }}
 {{- end }}
 
 {{- define "k0scontrolplane.name" -}}
@@ -40,13 +40,4 @@
     {{- include "cluster.name" .root }}-{{ $gpuType }}-md
 {{- end }}
 
-{{- define "gpu.enabled" -}}
-    {{- $gpuType := .gpuType }}
-    {{- $gpuConfig := index .root.Values.gpuTypes $gpuType }}
-    {{- if and $gpuConfig (gt ($gpuConfig.replicas | int) 0) -}}
-        {{- true -}}
-    {{- else -}}
-        {{- false -}}
-    {{- end -}}
-{{- end }}
 

@@ -29,132 +29,8 @@
       "type": "number",
       "minimum": 1
     },
-    "gpuTypes": {
-      "description": "GPU node configurations",
-      "type": "object",
-      "properties": {
-        "l4": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of L4 GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "l40": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of L40 GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "h100": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of H100 GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "h200": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of H200 GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "b200": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of B200 GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "b200vm": {
-          "type": "object",
-          "properties": {
-            "replicas": {
-              "description": "The number of B200VM GPU nodes",
-              "type": "number",
-              "minimum": 0
-            },
-            "nodeLabels": {
-              "type": "object",
-              "additionalProperties": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "networkMTU": {
-      "type": "number",
-      "description": "The MTU (Maximum Transmission Unit) value for the network",
-      "default": 1500
-    },
-    "disableExternalNetwork": {
-      "type": "boolean",
-      "description": "Disable external network for private clusters",
-      "default": false
-    },
-    "disableAPIServerFloatingIP": {
-      "type": "boolean",
-      "description": "Disable floating IP for API server",
-      "default": false
-    },
-    "controlPlaneAvailabilityZones": {
-      "type": "array",
-      "description": "Availability zones for control plane nodes",
-      "items": {
-        "type": "string"
-      }
-    },
-    "gpu": {
-      "description": "GPU machine configurations",
+    "gpuWorker": {
+      "description": "GPU worker configuration",
       "type": "object",
       "properties": {
         "sshPublicKey": {
@@ -199,68 +75,308 @@
         },
         "securityGroups": {
           "type": "array",
-          "description": "Security groups for GPU nodes"
+          "description": "Security groups for GPU nodes",
+          "items": {
+            "type": "object",
+            "properties": {
+              "filter": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the security group to filter by"
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": "Optional: description for filtering"
+                  },
+                  "projectID": {
+                    "type": "string",
+                    "description": "Optional: project ID for filtering"
+                  }
+                }
+              }
+            }
+          }
         },
-        "types": {
+        "schedulerHintAdditionalProperties": {
           "type": "object",
-          "description": "GPU type-specific configurations",
+          "description": "Scheduler hints passed to Nova when launching the server instance"
+        },
+        "l4": {
+          "type": "object",
           "properties": {
-            "l4": {
+            "number": {
+              "description": "The number of L4 GPU nodes",
+              "type": "number",
+              "minimum": 0
+            },
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for L4 GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for L4 GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for L4 GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        "l40": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "description": "The number of L40 GPU nodes",
+              "type": "number",
+              "minimum": 0
             },
-            "l40": {
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for L40 GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for L40 GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for L40 GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        "h100": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "description": "The number of H100 GPU nodes",
+              "type": "number",
+              "minimum": 0
             },
-            "h100": {
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for H100 GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for H100 GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for H100 GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        "h200": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "description": "The number of H200 GPU nodes",
+              "type": "number",
+              "minimum": 0
             },
-            "h200": {
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for H200 GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for H200 GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for H200 GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        "b200": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "description": "The number of B200 GPU nodes",
+              "type": "number",
+              "minimum": 0
             },
-            "b200": {
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for B200 GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for B200 GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for B200 GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
+            }
+          }
+        },
+        "b200vm": {
+          "type": "object",
+          "properties": {
+            "number": {
+              "description": "The number of B200VM GPU nodes",
+              "type": "number",
+              "minimum": 0
             },
-            "b200vm": {
+            "flavor": {
+              "type": "string",
+              "description": "OpenStack flavor for B200VM GPU nodes"
+            },
+            "customUserDataRef": {
               "type": "object",
+              "description": "Custom cloud-init configuration for B200VM GPU nodes",
               "properties": {
-                "flavor": {
-                  "type": "string",
-                  "description": "OpenStack flavor for B200VM GPU nodes"
+                "secretRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "configMapRef": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "type": "string"
+                    },
+                    "namespace": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
           }
         }
+      }
+    },
+    "networkMTU": {
+      "type": "number",
+      "description": "The MTU (Maximum Transmission Unit) value for the network",
+      "default": 1500
+    },
+    "disableExternalNetwork": {
+      "type": "boolean",
+      "description": "Disable external network for private clusters",
+      "default": false
+    },
+    "disableAPIServerFloatingIP": {
+      "type": "boolean",
+      "description": "Disable floating IP for API server",
+      "default": false
+    },
+    "controlPlaneAvailabilityZones": {
+      "type": "array",
+      "description": "Availability zones for control plane nodes",
+      "items": {
+        "type": "string"
       }
     },
     "clusterNetwork": {
@@ -974,231 +1090,6 @@
         }
       }
     },
-    "gpul4": {
-      "type": "object",
-      "description": "Configuration of the GPU L4 instances",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "sshPublicKey": {
-          "type": "string",
-          "description": "SSH public key for accessing nodes"
-        },
-        "providerID": {
-          "type": ["string", "null"],
-          "description": "Unique ID for the instance provider"
-        },
-        "flavor": {
-          "type": "string",
-          "description": "OpenStack flavor for instance size"
-        },
-        "image": {
-          "type": "object",
-          "properties": {
-            "filter": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "description": "Name of the image"
-                },
-                "tags": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "ports": {
-          "type": "array",
-          "description": "Ports to be attached to the server instance. Can include network, description, nameSuffix, fixedIPs, securityGroups, tags, trunk, and ResolvedPortSpecFields.",
-          "items": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "securityGroups": {
-          "type": "array",
-          "description": "Security groups to be assigned to the instance",
-          "items": {
-            "type": "object",
-            "properties": {
-              "filter": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the security group to filter by"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Optional: description for filtering"
-                  },
-                  "projectID": {
-                    "type": "string",
-                    "description": "Optional: project ID for filtering"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "gpul40": {
-      "type": "object",
-      "description": "Configuration of the GPU L40 instances",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "sshPublicKey": {
-          "type": "string",
-          "description": "SSH public key for accessing nodes"
-        },
-        "providerID": {
-          "type": ["string", "null"],
-          "description": "Unique ID for the instance provider"
-        },
-        "flavor": {
-          "type": "string",
-          "description": "OpenStack flavor for instance size"
-        },
-        "image": {
-          "type": "object",
-          "properties": {
-            "filter": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "description": "Name of the image"
-                },
-                "tags": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "ports": {
-          "type": "array",
-          "description": "Ports to be attached to the server instance. Can include network, description, nameSuffix, fixedIPs, securityGroups, tags, trunk, and ResolvedPortSpecFields.",
-          "items": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "securityGroups": {
-          "type": "array",
-          "description": "Security groups to be assigned to the instance",
-          "items": {
-            "type": "object",
-            "properties": {
-              "filter": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the security group to filter by"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Optional: description for filtering"
-                  },
-                  "projectID": {
-                    "type": "string",
-                    "description": "Optional: project ID for filtering"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "gpuh200": {
-      "type": "object",
-      "description": "Configuration of the GPU H200 instances",
-      "required": [
-        "flavor"
-      ],
-      "properties": {
-        "sshPublicKey": {
-          "type": "string",
-          "description": "SSH public key for accessing nodes"
-        },
-        "providerID": {
-          "type": ["string", "null"],
-          "description": "Unique ID for the instance provider"
-        },
-        "flavor": {
-          "type": "string",
-          "description": "OpenStack flavor for instance size"
-        },
-        "image": {
-          "type": "object",
-          "properties": {
-            "filter": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string",
-                  "description": "Name of the image"
-                },
-                "tags": {
-                  "type": "array",
-                  "items": {
-                    "type": "string"
-                  }
-                }
-              }
-            }
-          }
-        },
-        "ports": {
-          "type": "array",
-          "description": "Ports to be attached to the server instance. Can include network, description, nameSuffix, fixedIPs, securityGroups, tags, trunk, and ResolvedPortSpecFields.",
-          "items": {
-            "type": "object",
-            "additionalProperties": true
-          }
-        },
-        "securityGroups": {
-          "type": "array",
-          "description": "Security groups to be assigned to the instance",
-          "items": {
-            "type": "object",
-            "properties": {
-              "filter": {
-                "type": "object",
-                "properties": {
-                  "name": {
-                    "type": "string",
-                    "description": "Name of the security group to filter by"
-                  },
-                  "description": {
-                    "type": "string",
-                    "description": "Optional: description for filtering"
-                  },
-                  "projectID": {
-                    "type": "string",
-                    "description": "Optional: project ID for filtering"
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "k0smotron": {
       "type": "object",
       "description": "K0smotron parameters",
@@ -1254,6 +1145,28 @@
                 "type": "string"
               }
             }
+          }
+        },
+        "files": {
+          "type": "array",
+          "description": "Files to deploy to control plane nodes",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "Path to deploy the file to"
+              },
+              "permissions": {
+                "type": "string",
+                "description": "File permissions (e.g., '0644')"
+              },
+              "content": {
+                "type": "string",
+                "description": "File content"
+              }
+            },
+            "required": ["path", "content"]
           }
         }
       }

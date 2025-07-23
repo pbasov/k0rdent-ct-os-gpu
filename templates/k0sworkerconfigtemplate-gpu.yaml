@@ -1,0 +1,36 @@
+{{- $gpuTypes := list "l4" "l40" "h100" "h200" "b200" "b200vm" }}
+{{- range $gpuType := $gpuTypes }}
+{{- $gpuConfig := index $.Values.gpuWorker $gpuType }}
+{{- if and $gpuConfig (gt ($gpuConfig.number | int) 0) }}
+---
+apiVersion: bootstrap.cluster.x-k8s.io/v1beta1
+kind: K0sWorkerConfigTemplate
+metadata:
+  name: {{ include "cluster.name" $ }}-{{ $gpuType }}-machine-config
+spec:
+  template:
+    spec:
+      args:
+      - --enable-cloud-provider
+      - --kubelet-extra-args="--cloud-provider=external"
+      - --cri-socket=remote:/var/run/crio/crio.sock
+      - --taints=node-role.kubernetes.io/gpu=:NoSchedule
+      version: {{ $.Values.k0s.version }}
+      {{- if $gpuConfig.customUserDataRef }}
+      customUserDataRef:
+        {{- if $gpuConfig.customUserDataRef.secretRef }}
+        secretRef:
+          name: {{ $gpuConfig.customUserDataRef.secretRef.name }}
+          {{- if $gpuConfig.customUserDataRef.secretRef.namespace }}
+          namespace: {{ $gpuConfig.customUserDataRef.secretRef.namespace }}
+          {{- end }}
+        {{- else if $gpuConfig.customUserDataRef.configMapRef }}
+        configMapRef:
+          name: {{ $gpuConfig.customUserDataRef.configMapRef.name }}
+          {{- if $gpuConfig.customUserDataRef.configMapRef.namespace }}
+          namespace: {{ $gpuConfig.customUserDataRef.configMapRef.namespace }}
+          {{- end }}
+        {{- end }}
+      {{- end }}
+{{- end }}
+{{- end }}

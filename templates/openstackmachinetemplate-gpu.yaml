@@ -1,0 +1,64 @@
+{{- $gpuTypes := list "l4" "l40" "h100" "h200" "b200" "b200vm" }}
+{{- range $gpuType := $gpuTypes }}
+{{- $gpuConfig := index $.Values.gpuWorker $gpuType }}
+{{- if and $gpuConfig (gt ($gpuConfig.number | int) 0) }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta1
+kind: OpenStackMachineTemplate
+metadata:
+  name: {{ include "openstackmachinetemplate.gpu.name" (dict "root" $ "gpuType" $gpuType) }}
+spec:
+  template:
+    spec:
+      flavor: {{ $gpuConfig.flavor }}
+      identityRef:
+        name: {{ $.Values.identityRef.name }}
+        region: {{ $.Values.identityRef.region }}
+        cloudName: {{ $.Values.identityRef.cloudName }}
+      image:
+        filter:
+          {{- if $gpuConfig.image }}
+          name: {{ $gpuConfig.image.filter.name }}
+          {{- if $gpuConfig.image.filter.tags }}
+          tags:
+            {{- range $tag := $gpuConfig.image.filter.tags }}
+            - {{ $tag }}
+            {{- end }}
+          {{- end }}
+          {{- else }}
+          name: {{ $.Values.gpuWorker.image.filter.name }}
+          {{- if $.Values.gpuWorker.image.filter.tags }}
+          tags:
+            {{- range $tag := $.Values.gpuWorker.image.filter.tags }}
+            - {{ $tag }}
+            {{- end }}
+          {{- end }}
+          {{- end }}
+      {{- if $gpuConfig.ports }}
+      ports:
+        {{ $gpuConfig.ports | toYaml | nindent 8 }}
+      {{- else if gt (len $.Values.gpuWorker.ports) 0 }}
+      ports:
+        {{ $.Values.gpuWorker.ports | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if $.Values.gpuWorker.rootVolume }}
+      rootVolume:
+        {{ $.Values.gpuWorker.rootVolume | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if gt (len $.Values.gpuWorker.additionalBlockDevices) 0 }}
+      additionalBlockDevices:
+        {{ $.Values.gpuWorker.additionalBlockDevices | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if gt (len $.Values.gpuWorker.securityGroups) 0 }}
+      securityGroups:
+        {{ $.Values.gpuWorker.securityGroups | toYaml | nindent 8 }}
+      {{- end }}
+      {{- if not ($.Values.gpuWorker.sshPublicKey | empty) }}
+      sshKeyName: {{ $.Values.gpuWorker.sshPublicKey }}
+      {{- end }}
+      {{- if not ($.Values.gpuWorker.schedulerHintAdditionalProperties | empty) }}
+      schedulerHintAdditionalProperties:
+        {{ $.Values.gpuWorker.schedulerHintAdditionalProperties | toYaml | nindent 8 }}
+      {{- end }}
+{{- end }}
+{{- end }}

@@ -2,44 +2,6 @@ controlPlaneNumber: 3
 workersNumber: 3
 ingressNumber: 2
 
-# GPU node configurations
-gpuTypes:
-  l4:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "l4"
-  l40:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "l40"
-  h100:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "h100"
-  h200:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "h200"
-  b200:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "b200"
-  b200vm:
-    replicas: 0
-    nodeLabels:
-      node-role.kubernetes.io/gpu: ""
-      node.kubernetes.io/role: gpu
-      node.kubernetes.io/gpu-type: "b200vm"
 
 clusterNetwork:
   pods:
@@ -135,8 +97,8 @@ ingress:
       description: ""
       projectID: ""
 
-# GPU machine specifications - consolidated configuration
-gpu:
+# GPU worker configuration
+gpuWorker:
   # Common configuration for all GPU types
   sshPublicKey: ""
   providerID: ""
@@ -151,20 +113,26 @@ gpu:
       name: "default"
       description: ""
       projectID: ""
-  # GPU-specific configurations
-  types:
-    l4:
-      flavor: ""
-    l40:
-      flavor: ""
-    h100:
-      flavor: ""
-    h200:
-      flavor: ""
-    b200:
-      flavor: ""
-    b200vm:
-      flavor: ""
+  
+  # GPU type-specific configurations
+  l4:
+    number: 0
+    flavor: ""
+  l40:
+    number: 0
+    flavor: ""
+  h100:
+    number: 0
+    flavor: ""
+  h200:
+    number: 0
+    flavor: ""
+  b200:
+    number: 0
+    flavor: ""
+  b200vm:
+    number: 0
+    flavor: ""
 
 k0s:
   version: v1.33.3+k0s.0
